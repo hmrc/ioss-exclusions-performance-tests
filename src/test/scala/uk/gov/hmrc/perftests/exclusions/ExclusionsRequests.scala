@@ -24,7 +24,7 @@ import uk.gov.hmrc.performance.conf.ServicesConfiguration
 object ExclusionsRequests extends ServicesConfiguration {
 
   val baseUrl: String = baseUrlFor("ioss-exclusions-frontend")
-  val route: String   = "/ioss-exclusions-frontend"
+  val route: String   = "/pay-vat-on-goods-sold-to-eu/leave-import-one-stop-shop"
   val loginUrl        = baseUrlFor("auth-login-stub")
 
   def getAuthorityWizard =
