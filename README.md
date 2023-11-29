@@ -2,7 +2,7 @@
 
 # ioss-exclusions-performance-tests
 
-Performance test suite for the `<digital service name>`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
+Performance test suite for the `ioss-exclusions-frontend`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
 
 ## Pre-requisites
 
@@ -14,10 +14,10 @@ Start Mongo Docker container as follows:
 docker run --rm -d -p 27017:27017 --name mongo mongo:4.4
 ```
 
-Start `PLATFORM_EXAMPLE_UI_TESTS` services as follows:
+Start `IMPORT_ONE_STOP_SHOP` services as follows:
 
 ```bash
-sm2 --start PLATFORM_EXAMPLE_UI_TESTS
+sm2 --start IMPORT_ONE_STOP_SHOP_ALL
 ```
 
 ### Logging
