@@ -17,15 +17,20 @@
 package uk.gov.hmrc.perftests.exclusions
 
 import io.gatling.core.Predef._
+import io.gatling.core.session.Expression
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
+
+import java.time.LocalDate
 
 object ExclusionsRequests extends ServicesConfiguration {
 
   val baseUrl: String = baseUrlFor("ioss-exclusions-frontend")
   val route: String   = "/pay-vat-on-goods-sold-to-eu/leave-import-one-stop-shop"
   val loginUrl        = baseUrlFor("auth-login-stub")
+
+  def inputSelectorByName(name: String): Expression[String] = s"input[name='$name']"
 
   def getAuthorityWizard =
     http("Get Authority Wizard page")
@@ -54,10 +59,74 @@ object ExclusionsRequests extends ServicesConfiguration {
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
 
-  def getHomePage =
-    http("Get Exclusions Home Page")
-      .get(baseUrl + route)
+  def getMoveCountry =
+    http("Get Move Country page")
+      .get(s"$baseUrl$route/move-country")
       .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postMoveCountry =
+    http("Post Move Country")
+      .post(s"$baseUrl$route/move-country")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", "true")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/eu-country"))
+
+  def getEuCountry =
+    http("Get EU Country page")
+      .get(s"$baseUrl$route/eu-country")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postEuCountry =
+    http("Post EU Country")
+      .post(s"$baseUrl$route/eu-country")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", "HR")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/move-date"))
+
+  def getMoveDate =
+    http("Get Move Date page")
+      .get(s"$baseUrl$route/move-date")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postMoveDate =
+    http("Post Move Date")
+      .post(s"$baseUrl$route/move-date")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value.day", s"${LocalDate.now().getDayOfMonth}")
+      .formParam("value.month", s"${LocalDate.now().getMonthValue}")
+      .formParam("value.year", s"${LocalDate.now().getYear}")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/tax-number"))
+
+  def getTaxNumber =
+    http("Get Tax Number page")
+      .get(s"$baseUrl$route/tax-number")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postTaxNumber =
+    http("Post Tax Number")
+      .post(s"$baseUrl$route/tax-number")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", "HR01234567888")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/check-your-answers"))
+
+  def getCheckYourAnswers =
+    http("Get Check Your Answers page")
+      .get(s"$baseUrl$route/check-your-answers")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+//      Page still being developed
+//      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
 }

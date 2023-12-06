@@ -21,11 +21,19 @@ import uk.gov.hmrc.perftests.exclusions.ExclusionsRequests._
 
 class ExclusionsSimulation extends PerformanceTestRunner {
 
-  setup("exclusions", "Exclusions Journey") withRequests
+  setup("exclusionsMoveCountry", "Exclusions - Move Country Journey") withRequests
     (
       getAuthorityWizard,
       postAuthorityWizard,
-      getHomePage
+      getMoveCountry,
+      postMoveCountry,
+      getEuCountry,
+      postEuCountry,
+      getMoveDate,
+      postMoveDate,
+      getTaxNumber,
+      postTaxNumber,
+      getCheckYourAnswers
     )
   runSimulation()
 }
