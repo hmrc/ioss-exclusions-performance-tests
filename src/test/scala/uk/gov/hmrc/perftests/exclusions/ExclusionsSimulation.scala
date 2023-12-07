@@ -26,7 +26,7 @@ class ExclusionsSimulation extends PerformanceTestRunner {
       getAuthorityWizard,
       postAuthorityWizard,
       getMoveCountry,
-      postMoveCountry,
+      postMoveCountry(true),
       getEuCountry,
       postEuCountry,
       getMoveDate,
@@ -35,5 +35,34 @@ class ExclusionsSimulation extends PerformanceTestRunner {
       postTaxNumber,
       getCheckYourAnswers
     )
+
+  setup("exclusionsStoppedSellingGoods", "Exclusions - Stopped Selling Eligible Goods Journey") withRequests
+    (
+      getAuthorityWizard,
+      postAuthorityWizard,
+      getMoveCountry,
+      postMoveCountry(false),
+      getStoppedSellingGoods,
+      postStoppedSellingGoods(true),
+      getStoppedSellingGoodsDate,
+      postStoppedSellingGoodsDate,
+      getSuccessful
+    )
+
+  setup("exclusionsVoluntary", "Exclusions - Voluntary Journey") withRequests
+    (
+      getAuthorityWizard,
+      postAuthorityWizard,
+      getMoveCountry,
+      postMoveCountry(false),
+      getStoppedSellingGoods,
+      postStoppedSellingGoods(false),
+      getLeaveScheme,
+      postLeaveScheme,
+      getStoppedUsingServiceDate,
+      postStoppedUsingServiceDate,
+      getSuccessful
+    )
+
   runSimulation()
 }
