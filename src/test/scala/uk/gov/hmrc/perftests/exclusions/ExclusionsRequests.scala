@@ -17,15 +17,20 @@
 package uk.gov.hmrc.perftests.exclusions
 
 import io.gatling.core.Predef._
+import io.gatling.core.session.Expression
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
+
+import java.time.LocalDate
 
 object ExclusionsRequests extends ServicesConfiguration {
 
   val baseUrl: String = baseUrlFor("ioss-exclusions-frontend")
   val route: String   = "/pay-vat-on-goods-sold-to-eu/leave-import-one-stop-shop"
   val loginUrl        = baseUrlFor("auth-login-stub")
+
+  def inputSelectorByName(name: String): Expression[String] = s"input[name='$name']"
 
   def getAuthorityWizard =
     http("Get Authority Wizard page")
@@ -54,10 +59,160 @@ object ExclusionsRequests extends ServicesConfiguration {
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
 
-  def getHomePage =
-    http("Get Exclusions Home Page")
-      .get(baseUrl + route)
+  def getMoveCountry =
+    http("Get Move Country page")
+      .get(s"$baseUrl$route/move-country")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def testMoveCountry(answer: Boolean) =
+    http("Post Move Country")
+      .post(s"$baseUrl$route/move-country")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", answer)
+      .check(status.in(200, 303))
+
+  def postMoveCountry(answer: Boolean) =
+    if (answer) {
+      testMoveCountry(answer)
+        .check(header("Location").is(s"$route/eu-country"))
+    } else {
+      testMoveCountry(answer)
+        .check(header("Location").is(s"$route/stop-selling-goods"))
+    }
+
+  def getEuCountry =
+    http("Get EU Country page")
+      .get(s"$baseUrl$route/eu-country")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postEuCountry =
+    http("Post EU Country")
+      .post(s"$baseUrl$route/eu-country")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", "HR")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/move-date"))
+
+  def getMoveDate =
+    http("Get Move Date page")
+      .get(s"$baseUrl$route/move-date")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postMoveDate =
+    http("Post Move Date")
+      .post(s"$baseUrl$route/move-date")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value.day", s"${LocalDate.now().getDayOfMonth}")
+      .formParam("value.month", s"${LocalDate.now().getMonthValue}")
+      .formParam("value.year", s"${LocalDate.now().getYear}")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/tax-number"))
+
+  def getTaxNumber =
+    http("Get Tax Number page")
+      .get(s"$baseUrl$route/tax-number")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postTaxNumber =
+    http("Post Tax Number")
+      .post(s"$baseUrl$route/tax-number")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", "HR01234567888")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/check-your-answers"))
+
+  def getCheckYourAnswers =
+    http("Get Check Your Answers page")
+      .get(s"$baseUrl$route/check-your-answers")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+//      Page still being developed
+//      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def getStoppedSellingGoods =
+    http("Get Stopped Selling Goods page")
+      .get(s"$baseUrl$route/stop-selling-goods")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def testStoppedSellingGoods(answer: Boolean) =
+    http("Post Stopped Selling Goods")
+      .post(s"$baseUrl$route/stop-selling-goods")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", answer)
+      .check(status.in(200, 303))
+
+  def postStoppedSellingGoods(answer: Boolean) =
+    if (answer) {
+      testStoppedSellingGoods(answer)
+        .check(header("Location").is(s"$route/stopped-selling-goods-date"))
+    } else {
+      testStoppedSellingGoods(answer)
+        .check(header("Location").is(s"$route/leave-scheme"))
+    }
+
+  def getStoppedSellingGoodsDate =
+    http("Get Stopped Selling Goods Date page")
+      .get(s"$baseUrl$route/stopped-selling-goods-date")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postStoppedSellingGoodsDate =
+    http("Post Stopped Selling Goods Date")
+      .post(s"$baseUrl$route/stopped-selling-goods-date")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value.day", s"${LocalDate.now().getDayOfMonth}")
+      .formParam("value.month", s"${LocalDate.now().getMonthValue}")
+      .formParam("value.year", s"${LocalDate.now().getYear}")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/successful"))
+
+  def getSuccessful =
+    http("Get Successful page")
+      .get(s"$baseUrl$route/successful")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(status.in(200))
+
+  def getLeaveScheme =
+    http("Get Leave Scheme page")
+      .get(s"$baseUrl$route/leave-scheme")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postLeaveScheme =
+    http("Post Leave Scheme")
+      .post(s"$baseUrl$route/leave-scheme")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", true)
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/stopped-using-service-date"))
+
+  def getStoppedUsingServiceDate =
+    http("Get Stopped Using Service Date page")
+      .get(s"$baseUrl$route/stopped-using-service-date")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postStoppedUsingServiceDate =
+    http("Post Stopped Using Service Date")
+      .post(s"$baseUrl$route/stopped-using-service-date")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value.day", s"${LocalDate.now().getDayOfMonth}")
+      .formParam("value.month", s"${LocalDate.now().getMonthValue}")
+      .formParam("value.year", s"${LocalDate.now().getYear}")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/successful"))
 
 }
