@@ -133,9 +133,15 @@ object ExclusionsRequests extends ServicesConfiguration {
     http("Get Check Your Answers page")
       .get(s"$baseUrl$route/check-your-answers")
       .header("Cookie", "mdtp=${mdtpCookie}")
-//      Page still being developed
-//      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
+
+  def postCheckYourAnswers =
+    http("Post Check Your Answers")
+      .post(s"$baseUrl$route/check-your-answers/false")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/successful"))
 
   def getStoppedSellingGoods =
     http("Get Stopped Selling Goods page")
