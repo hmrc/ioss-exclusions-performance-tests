@@ -33,7 +33,9 @@ class ExclusionsSimulation extends PerformanceTestRunner {
       postMoveDate,
       getTaxNumber,
       postTaxNumber,
-      getCheckYourAnswers
+      getCheckYourAnswers,
+      postCheckYourAnswers,
+      getSuccessful
     )
 
   setup("exclusionsStoppedSellingGoods", "Exclusions - Stopped Selling Eligible Goods Journey") withRequests
