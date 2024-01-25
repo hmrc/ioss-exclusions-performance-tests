@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,18 +112,18 @@ object ExclusionsRequests extends ServicesConfiguration {
       .formParam("value.month", s"${LocalDate.now().getMonthValue}")
       .formParam("value.year", s"${LocalDate.now().getYear}")
       .check(status.in(200, 303))
-      .check(header("Location").is(s"$route/tax-number"))
+      .check(header("Location").is(s"$route/eu-vat-number"))
 
   def getTaxNumber =
     http("Get Tax Number page")
-      .get(s"$baseUrl$route/tax-number")
+      .get(s"$baseUrl$route/eu-vat-number")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postTaxNumber =
     http("Post Tax Number")
-      .post(s"$baseUrl$route/tax-number")
+      .post(s"$baseUrl$route/eu-vat-number")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", "HR01234567888")
       .check(status.in(200, 303))
