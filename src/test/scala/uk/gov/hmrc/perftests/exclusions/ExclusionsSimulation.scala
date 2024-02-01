@@ -24,7 +24,7 @@ class ExclusionsSimulation extends PerformanceTestRunner {
   setup("exclusionsMoveCountry", "Exclusions - Move Country Journey") withRequests
     (
       getAuthorityWizard,
-      postAuthorityWizard,
+      postAuthorityWizard("IM9001234567"),
       getMoveCountry,
       postMoveCountry(true),
       getEuCountry,
@@ -41,7 +41,7 @@ class ExclusionsSimulation extends PerformanceTestRunner {
   setup("exclusionsStoppedSellingGoods", "Exclusions - Stopped Selling Eligible Goods Journey") withRequests
     (
       getAuthorityWizard,
-      postAuthorityWizard,
+      postAuthorityWizard("IM9001234567"),
       getMoveCountry,
       postMoveCountry(false),
       getStoppedSellingGoods,
@@ -54,7 +54,7 @@ class ExclusionsSimulation extends PerformanceTestRunner {
   setup("exclusionsVoluntary", "Exclusions - Voluntary Journey") withRequests
     (
       getAuthorityWizard,
-      postAuthorityWizard,
+      postAuthorityWizard("IM9001234567"),
       getMoveCountry,
       postMoveCountry(false),
       getStoppedSellingGoods,
@@ -64,6 +64,15 @@ class ExclusionsSimulation extends PerformanceTestRunner {
       getStoppedUsingServiceDate,
       postStoppedUsingServiceDate,
       getSuccessful
+    )
+
+  setup("reversal", "Exclusions - Reversal Journey") withRequests
+    (
+      getAuthorityWizard,
+      postAuthorityWizard("IM9009999997"),
+      getCancelLeaveScheme,
+      postCancelLeaveScheme,
+      getCancelLeaveSchemeComplete
     )
 
   runSimulation()

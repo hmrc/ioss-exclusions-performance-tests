@@ -37,7 +37,7 @@ object ExclusionsRequests extends ServicesConfiguration {
       .get(loginUrl + s"/auth-login-stub/gg-sign-in")
       .check(status.in(200, 303))
 
-  def postAuthorityWizard =
+  def postAuthorityWizard(iossNumber: String) =
     http("Enter Auth login credentials ")
       .post(loginUrl + s"/auth-login-stub/gg-sign-in")
       .formParam("authorityId", "")
@@ -54,7 +54,7 @@ object ExclusionsRequests extends ServicesConfiguration {
       .formParam("enrolment[0].state", "Activated")
       .formParam("enrolment[1].name", "HMRC-IOSS-ORG")
       .formParam("enrolment[1].taxIdentifier[0].name", "IOSSNumber")
-      .formParam("enrolment[1].taxIdentifier[0].value", "IM9001234567")
+      .formParam("enrolment[1].taxIdentifier[0].value", iossNumber)
       .formParam("enrolment[1].state", "Activated")
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
@@ -220,5 +220,26 @@ object ExclusionsRequests extends ServicesConfiguration {
       .formParam("value.year", s"${LocalDate.now().getYear}")
       .check(status.in(200, 303))
       .check(header("Location").is(s"$route/successful"))
+
+  def getCancelLeaveScheme =
+    http("Get Cancel Leave Scheme page")
+      .get(s"$baseUrl$route/cancel-leave-scheme")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCancelLeaveScheme =
+    http("Post Cancel Leave Scheme")
+      .post(s"$baseUrl$route/cancel-leave-scheme")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", true)
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/cancel-leave-scheme-complete"))
+
+  def getCancelLeaveSchemeComplete =
+    http("Get Cancel Leave Scheme Complete page")
+      .get(s"$baseUrl$route/cancel-leave-scheme-complete")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(status.in(200))
 
 }
