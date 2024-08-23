@@ -181,7 +181,7 @@ object ExclusionsRequests extends ServicesConfiguration {
       .formParam("value.month", s"${LocalDate.now().getMonthValue}")
       .formParam("value.year", s"${LocalDate.now().getYear}")
       .check(status.in(200, 303))
-      .check(header("Location").is(s"$route/successful"))
+      .check(header("Location").is(s"$route/check-your-answers"))
 
   def getSuccessful =
     http("Get Successful page")
@@ -219,7 +219,7 @@ object ExclusionsRequests extends ServicesConfiguration {
       .formParam("value.month", s"${LocalDate.now().getMonthValue}")
       .formParam("value.year", s"${LocalDate.now().getYear}")
       .check(status.in(200, 303))
-      .check(header("Location").is(s"$route/successful"))
+      .check(header("Location").is(s"$route/check-your-answers"))
 
   def getCancelLeaveScheme =
     http("Get Cancel Leave Scheme page")
