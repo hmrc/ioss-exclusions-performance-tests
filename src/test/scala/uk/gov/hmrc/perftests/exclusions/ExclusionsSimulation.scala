@@ -48,6 +48,8 @@ class ExclusionsSimulation extends PerformanceTestRunner {
       postStoppedSellingGoods(true),
       getStoppedSellingGoodsDate,
       postStoppedSellingGoodsDate,
+      getCheckYourAnswers,
+      postCheckYourAnswers,
       getSuccessful
     )
 
@@ -63,6 +65,8 @@ class ExclusionsSimulation extends PerformanceTestRunner {
       postLeaveScheme,
       getStoppedUsingServiceDate,
       postStoppedUsingServiceDate,
+      getCheckYourAnswers,
+      postCheckYourAnswers,
       getSuccessful
     )
 
