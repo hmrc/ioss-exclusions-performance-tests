@@ -61,14 +61,14 @@ object ExclusionsRequests extends ServicesConfiguration {
 
   def getMoveCountry =
     http("Get Move Country page")
-      .get(s"$baseUrl$route/move-country")
+      .get(s"$baseUrl$route/moving-to-an-eu-country")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def testMoveCountry(answer: Boolean) =
     http("Post Move Country")
-      .post(s"$baseUrl$route/move-country")
+      .post(s"$baseUrl$route/moving-to-an-eu-country")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
@@ -76,7 +76,7 @@ object ExclusionsRequests extends ServicesConfiguration {
   def postMoveCountry(answer: Boolean) =
     if (answer) {
       testMoveCountry(answer)
-        .check(header("Location").is(s"$route/eu-country"))
+        .check(header("Location").is(s"$route/which-eu-country"))
     } else {
       testMoveCountry(answer)
         .check(header("Location").is(s"$route/stop-selling-goods"))
@@ -84,14 +84,14 @@ object ExclusionsRequests extends ServicesConfiguration {
 
   def getEuCountry =
     http("Get EU Country page")
-      .get(s"$baseUrl$route/eu-country")
+      .get(s"$baseUrl$route/which-eu-country")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postEuCountry =
     http("Post EU Country")
-      .post(s"$baseUrl$route/eu-country")
+      .post(s"$baseUrl$route/which-eu-country")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", "HR")
       .check(status.in(200, 303))
@@ -141,7 +141,7 @@ object ExclusionsRequests extends ServicesConfiguration {
       .post(s"$baseUrl$route/check-your-answers/false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.in(200, 303))
-      .check(header("Location").is(s"$route/successful"))
+      .check(header("Location").is(s"$route/leave-request-received"))
 
   def getStoppedSellingGoods =
     http("Get Stopped Selling Goods page")
@@ -185,7 +185,7 @@ object ExclusionsRequests extends ServicesConfiguration {
 
   def getSuccessful =
     http("Get Successful page")
-      .get(s"$baseUrl$route/successful")
+      .get(s"$baseUrl$route/leave-request-received")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(status.in(200))
 
