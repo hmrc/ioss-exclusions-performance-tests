@@ -62,14 +62,14 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getMoveCountry =
     http("Get Move Country page")
       .get(s"$baseUrl$route/moving-to-an-eu-country")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def testMoveCountry(answer: Boolean) =
     http("Post Move Country")
       .post(s"$baseUrl$route/moving-to-an-eu-country")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
 
@@ -85,14 +85,14 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getEuCountry =
     http("Get EU Country page")
       .get(s"$baseUrl$route/which-eu-country")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postEuCountry =
     http("Post EU Country")
       .post(s"$baseUrl$route/which-eu-country")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", "HR")
       .check(status.in(200, 303))
       .check(header("Location").is(s"$route/move-date"))
@@ -100,14 +100,14 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getMoveDate =
     http("Get Move Date page")
       .get(s"$baseUrl$route/move-date")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postMoveDate =
     http("Post Move Date")
       .post(s"$baseUrl$route/move-date")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value.day", s"${LocalDate.now().getDayOfMonth}")
       .formParam("value.month", s"${LocalDate.now().getMonthValue}")
       .formParam("value.year", s"${LocalDate.now().getYear}")
@@ -117,14 +117,14 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getTaxNumber =
     http("Get Tax Number page")
       .get(s"$baseUrl$route/eu-vat-number")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postTaxNumber =
     http("Post Tax Number")
       .post(s"$baseUrl$route/eu-vat-number")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", "HR01234567888")
       .check(status.in(200, 303))
       .check(header("Location").is(s"$route/check-your-answers"))
@@ -132,28 +132,28 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getCheckYourAnswers =
     http("Get Check Your Answers page")
       .get(s"$baseUrl$route/check-your-answers")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postCheckYourAnswers =
     http("Post Check Your Answers")
       .post(s"$baseUrl$route/check-your-answers/false")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .check(status.in(200, 303))
       .check(header("Location").is(s"$route/leave-request-received"))
 
   def getStoppedSellingGoods =
     http("Get Stopped Selling Goods page")
       .get(s"$baseUrl$route/stop-selling-goods")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def testStoppedSellingGoods(answer: Boolean) =
     http("Post Stopped Selling Goods")
       .post(s"$baseUrl$route/stop-selling-goods")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
 
@@ -169,14 +169,14 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getStoppedSellingGoodsDate =
     http("Get Stopped Selling Goods Date page")
       .get(s"$baseUrl$route/stopped-selling-goods-date")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postStoppedSellingGoodsDate =
     http("Post Stopped Selling Goods Date")
       .post(s"$baseUrl$route/stopped-selling-goods-date")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value.day", s"${LocalDate.now().getDayOfMonth}")
       .formParam("value.month", s"${LocalDate.now().getMonthValue}")
       .formParam("value.year", s"${LocalDate.now().getYear}")
@@ -186,20 +186,20 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getSuccessful =
     http("Get Successful page")
       .get(s"$baseUrl$route/leave-request-received")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(status.in(200))
 
   def getLeaveScheme =
     http("Get Leave Scheme page")
       .get(s"$baseUrl$route/leave-scheme")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postLeaveScheme =
     http("Post Leave Scheme")
       .post(s"$baseUrl$route/leave-scheme")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
       .check(header("Location").is(s"$route/stopped-using-service-date"))
@@ -207,14 +207,14 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getStoppedUsingServiceDate =
     http("Get Stopped Using Service Date page")
       .get(s"$baseUrl$route/stopped-using-service-date")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postStoppedUsingServiceDate =
     http("Post Stopped Using Service Date")
       .post(s"$baseUrl$route/stopped-using-service-date")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value.day", s"${LocalDate.now().getDayOfMonth}")
       .formParam("value.month", s"${LocalDate.now().getMonthValue}")
       .formParam("value.year", s"${LocalDate.now().getYear}")
@@ -224,14 +224,14 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getCancelLeaveScheme =
     http("Get Cancel Leave Scheme page")
       .get(s"$baseUrl$route/cancel-leave-scheme")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postCancelLeaveScheme =
     http("Post Cancel Leave Scheme")
       .post(s"$baseUrl$route/cancel-leave-scheme")
-      .formParam("csrfToken", "${csrfToken}")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
       .check(header("Location").is(s"$route/cancel-leave-scheme-complete"))
@@ -239,7 +239,7 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getCancelLeaveSchemeComplete =
     http("Get Cancel Leave Scheme Complete page")
       .get(s"$baseUrl$route/cancel-leave-scheme-complete")
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(status.in(200))
 
 }
