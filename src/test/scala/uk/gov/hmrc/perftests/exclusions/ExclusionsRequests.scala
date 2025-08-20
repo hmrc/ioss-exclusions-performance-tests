@@ -35,11 +35,13 @@ object ExclusionsRequests extends ServicesConfiguration {
   def getAuthorityWizard =
     http("Get Authority Wizard page")
       .get(loginUrl + s"/auth-login-stub/gg-sign-in")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200, 303))
 
   def postAuthorityWizard(iossNumber: String) =
     http("Enter Auth login credentials ")
       .post(loginUrl + s"/auth-login-stub/gg-sign-in")
+      .formParam("csrfToken", "#{csrfToken}")
       .formParam("authorityId", "")
       .formParam("gatewayToken", "")
       .formParam("credentialStrength", "strong")
