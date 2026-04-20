@@ -52,7 +52,7 @@ object ExclusionsRequests extends ServicesConfiguration {
       .formParam("redirectionUrl", baseUrl + route)
       .formParam("enrolment[0].name", "HMRC-MTD-VAT")
       .formParam("enrolment[0].taxIdentifier[0].name", "VRN")
-      .formParam("enrolment[0].taxIdentifier[0].value", "${vrn}")
+      .formParam("enrolment[0].taxIdentifier[0].value", "#{vrn}")
       .formParam("enrolment[0].state", "Activated")
       .formParam("enrolment[1].name", "HMRC-IOSS-ORG")
       .formParam("enrolment[1].taxIdentifier[0].name", "IOSSNumber")
